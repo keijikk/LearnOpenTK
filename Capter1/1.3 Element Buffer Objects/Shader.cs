@@ -103,5 +103,10 @@ namespace LearnOpenTK
                 disposedValue = true;
             }
         }
+
+        ~Shader()
+        {
+            GL.DeleteProgram(Handle);
+        }
     }
 }

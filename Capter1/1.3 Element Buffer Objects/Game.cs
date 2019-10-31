@@ -12,15 +12,26 @@ namespace LearnOpenTK
 
         private readonly float[] _vertices =
         {
-            -0.5f, -0.5f, 0.0f, //Bottom-left vertex
-            0.5f, -0.5f, 0.0f, //Bottom-right vertex
-            0.0f, 0.5f, 0.0f //Top vertex
+            0.5f, 0.5f, 0.0f, // top right
+            0.5f, -0.5f, 0.0f, // bottom right
+            -0.5f, -0.5f, 0.0f, // bottom left
+            -0.5f, 0.5f, 0.0f // top left
+        };
+
+        uint[] _indices =
+        {
+            // note that we start from 0!
+            0, 1, 3, // first triangle
+            1, 2, 3 // second triangle
         };
 
         private int _vertexBufferObject;
         private int _vertexArrayObject;
 
         private Shader _shader;
+
+        // Add a handle for the EBO
+        private int _elementBufferObject;
 
         #endregion
 
@@ -54,40 +65,34 @@ namespace LearnOpenTK
             // クリアされた後の色を指定
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-            // shaderのコンパイル
-            _shader = new Shader("./Shaders/shader.vert", "./Shaders/shader.frag");
-
             // VBOを作成し、VBOに頂点データをバインドして、データをバッファにアップロードする
             _vertexBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
             GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Length * sizeof(float), _vertices,
                 BufferUsageHint.StaticDraw);
 
+            // EBOを作成してバインドをしてバッファにアップロード
+            _elementBufferObject = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _elementBufferObject);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(float), _indices,
+                BufferUsageHint.StaticDraw);
+
+
             // shaderのコンパイル
             _shader = new Shader("./Shaders/shader.vert", "./Shaders/shader.frag");
             _shader.Use();
 
-            // VAOにVBOにまとめる
+            // VAOにVBOとVEOをまとめる
             _vertexArrayObject = GL.GenVertexArray();
             GL.BindVertexArray(_vertexArrayObject);
 
-            // 再度VBOをバインドする。こうすることで、VAOをバインドすると自動的にVBOがバインドされるようになる。
+            // 再度VBO、EBOをバインドする
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _elementBufferObject);
 
-            // vertexをどのように解釈するかを指定する
-            // index: 頂点属性をのindex　shader.vertで指定したlayout (location = 0)を指定していたので、0を設定
-            // size: shader.vertのvertex attributeがvec3なので、3を指定
-            // VertexAttribPointerType: データタイプはfloat
-            // normalized: floatにキャストするときに整数データ値を正規化する場合にtrue. データがfloatの場合は無効
-            //    gl.BYTEおよびgl.SHORT型の場合、trueの場合、値を[-1、1]に正規化します。
-            //    gl.UNSIGNED_BYTEおよびgl.UNSIGNED_SHORT型の場合、trueの場合、値を[0、1]に正規化します。
-            //    gl.FLOATおよびgl.HALF_FLOAT型のgl.FLOAT 、このパラメータは無効です。
-            // stride: 頂点間のデータ幅
-            // offset: バッファ内の位置データの開始位置
+
+            // draw rectangle
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
-
-            // GL.EnableVertexAttribArrayを使用して頂点属性を有効にし、引数として頂点属性の位置を指定
-            // 頂点属性はデフォルトで無効になっています。
             GL.EnableVertexAttribArray(0);
 
 
@@ -105,10 +110,15 @@ namespace LearnOpenTK
             // Bind the VAO
             GL.BindVertexArray(_vertexArrayObject);
 
-            // And then call our drawing function.
-            //   How many vertices you want to draw. 3 for a triangle.
-            GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
-            Context.SwapBuffers();
+            // Then replace your call to DrawTriangles with one to DrawElements
+            // Arguments:
+            //   Primitive type to draw. Triangles in this case.
+            //   How many indices should be drawn. Six in this case.
+            //   Data type of the indices. The indices are an unsigned int, so we want that here too.
+            //   Offset in the EBO. Set this to 0 because we want to draw the whole thing.
+            GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
+
+            SwapBuffers();
             base.OnRenderFrame(e);
         }
 
@@ -122,16 +132,17 @@ namespace LearnOpenTK
 
         protected override void OnUnload(EventArgs e)
         {
-            // Unbind all the resources by binding the targets to 0/null.
+            _shader.Dispose();
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
             GL.BindVertexArray(0);
             GL.UseProgram(0);
 
-            // Delete all the resources.
             GL.DeleteBuffer(_vertexBufferObject);
-            GL.DeleteVertexArray(_vertexArrayObject);
+            GL.DeleteBuffer(_elementBufferObject);
+            GL.DeleteBuffer(_vertexArrayObject);
+            GL.DeleteVertexArray(_shader.Handle);
 
-            GL.DeleteProgram(_shader.Handle);
             base.OnUnload(e);
         }
     }
