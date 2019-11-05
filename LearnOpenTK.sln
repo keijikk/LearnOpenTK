@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Chapter1", "Chapter1", "{F0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "1.3 Element Buffer Objects", "Capter1\1.3 Element Buffer Objects\1.3 Element Buffer Objects.csproj", "{F0A6E008-0D58-4ADE-BD3D-3FD4931796B6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "1.4 Textures", "Capter1\1.4 Textures\1.4 Textures.csproj", "{D1A3BFF9-FF9D-4AD7-B499-6EF238B8DD26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{F0A6E008-0D58-4ADE-BD3D-3FD4931796B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0A6E008-0D58-4ADE-BD3D-3FD4931796B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0A6E008-0D58-4ADE-BD3D-3FD4931796B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1A3BFF9-FF9D-4AD7-B499-6EF238B8DD26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1A3BFF9-FF9D-4AD7-B499-6EF238B8DD26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1A3BFF9-FF9D-4AD7-B499-6EF238B8DD26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1A3BFF9-FF9D-4AD7-B499-6EF238B8DD26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -30,6 +36,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{97079802-84F2-4AF4-816B-6B1D2B7538E1} = {F038E26C-5C4A-4413-A42E-CA73CD362BE8}
 		{F0A6E008-0D58-4ADE-BD3D-3FD4931796B6} = {F038E26C-5C4A-4413-A42E-CA73CD362BE8}
+		{D1A3BFF9-FF9D-4AD7-B499-6EF238B8DD26} = {F038E26C-5C4A-4413-A42E-CA73CD362BE8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FD1B4A1C-A5D8-490E-B47E-A2E63CBC9701}
